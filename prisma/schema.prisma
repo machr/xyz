@@ -11,21 +11,22 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum PROVIDER {
+  TIKTOK
+  FACEBOOK
+  INSTAGRAM
+  TWITTER
+  REDDIT
+  THREADS
+  SNAPCHAT
+  OTHER
+}
+
 model Link {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   title     String   @db.VarChar(255)
   url       String   @db.VarChar(255)
-  category  String
+  category  PROVIDER
   userId    String
-
-  @@index([userId])
-}
-
-model User {
-  id          String @id @default(cuid())
-  displayName String @db.VarChar(100)
-  userId      String
-
-  @@index([userId])
 }
