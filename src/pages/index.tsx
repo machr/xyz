@@ -75,7 +75,7 @@ const Home: NextPage = () => {
         <h3>Links</h3>
         {data?.map(({ link, user }) => (
 
-          <div key={user.id} >
+          <div key={link.id} >
             <Image src={user.imageUrl} width={40} height={40} alt="Profile picture" />
             <a key={link.id} href={link.url}>{link.title}</a>
           </div>
