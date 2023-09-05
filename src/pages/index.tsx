@@ -5,49 +5,22 @@ import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import type { NextPage } from "next";
 import { useState } from "react";
 
-const CreateLinkWizard = () => {
-  const { user } = useUser();
-
-  const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
-  const [category, setCategory] = useState('null')
-
-
-  const { mutate } = api.links.create.useMutation()
-
-  const handleSubmit = () => mutate({
-    title,
-    url,
-    category
-  })
-
-  if (!user) return null;
-
-  return <div className="flex gap-3">
-    <Image alt="Profile picture" src={user.imageUrl} width={56} height={56} className="rounded-full h-14 w-14" />
-    <input type="text" placeholder="Enter headline" className="border-2 border-black/50 rounded p-4" value={title} onChange={(e) => setTitle(e.target.value)} />
-
-    <input type="text" placeholder="Enter link url" className="border-2 border-black/50 rounded p-4" value={url} onChange={(e) => setUrl(e.target.value)} />
-
-    <select onChange={(e) => setCategory(e.target.value)} value={category}>
-      <option value="reddit">Reddit</option>
-      <option value="instagram">Instagram</option>
-      <option value="twitter">Twitter</option>
-      <option value="tiktok">Tiktok</option>
-      <option value="threads">threads</option>
-      <option value="facebook">facebook</option>
-    </select>
-    <button onClick={handleSubmit}>Add Link</button>
-  </div>
+const ClaimDisplayName = () => {
+  const [ displayName, setDisplayName ] = useState('')
+  const submitClaim = () => {
+    console.log(displayName)
+  }
+  return (
+    <div>
+      <input  className="border-2 border-slate-800/80 rounded mr-4 p-3" type="text" placeholder="Your Display Name Here" onChange={(evt) => setDisplayName(evt.target.value)}/>
+      <button  className="border-2 border-slate-800/80 rounded p-3" onClick={submitClaim}>Claim</button>
+    </div>
+  )
 }
 
 
-
 const Home: NextPage = () => {
-  const user = useUser();
-
-  const { data } = api.links.getAll.useQuery()
-
+  const { isSignedIn, user } = useUser();
   return (
     <>
       <Head>
@@ -57,29 +30,20 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          {!user.isSignedIn && (
+          {!isSignedIn && (
             <div className="text-3xl border-2 hover:bg-white hover:text-black hover:border-black/75 rounded p-7 bg-black text-white">
               <SignInButton />
+
             </div>
           )}
-          {!!user.isSignedIn && (
+          {!!isSignedIn && (
             <>
-              <CreateLinkWizard />
               <div className="text-3xl border-2 hover:bg-white hover:text-black hover:border-black/75 rounded p-7 bg-black text-white">
                 <SignOutButton />
               </div>
             </>
           )}
         </div>
-
-        <h3>Links</h3>
-        {data?.map(({ link, user }) => (
-
-          <div key={link.id} >
-            <Image src={user.imageUrl} width={40} height={40} alt="Profile picture" />
-            <a key={link.id} href={link.url}>{link.title}</a>
-          </div>
-        ))}
       </main>
     </>
   );
